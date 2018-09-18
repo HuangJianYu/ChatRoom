@@ -9,7 +9,7 @@
 export default {
   name: 'App'
 }
-console.log("HJY TEST : test git")
+console.log("HJY TEST : test version 2")
 </script>
 
 <style>
