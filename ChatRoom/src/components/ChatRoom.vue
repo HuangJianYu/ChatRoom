@@ -48,9 +48,7 @@ export default {
       let date = new Date()
       console.log('HJY TEST : date = ' + JSON.stringify(date))
       if (mes.type === 'enter') {
-        // console.log("HJY TEST : str = "+str)
         that.user.push(mes.data)
-        // console.log("HJY TEST : that.user = "+that.user)
       } else if (mes.type === 'leave') {
       } else if (mes.type === 'message') {
         let chat = {}
@@ -68,54 +66,27 @@ export default {
     $img.change(selectFile)
 
     function selectFile () {
-      console.log("HJY TEST : $img.change")
-      that.hasImg = true
-      that.$nextTick(()=>{
-        imgSrc = window.URL.createObjectURL($(this)[0].files[0])
-        $("#preview").attr("src",imgSrc)
-        console.log('HJY TEST : src = ' + imgSrc)
-      })
-    }
-
-    function getBase64Img () {
-      var img = imgSrc //imgurl 就是你的图片路径  
-
-      function getBase64Image(img) {  
-           var canvas = document.createElement("canvas")
-           canvas.width = img.width 
-           canvas.height = img.height
-           var ctx = canvas.getContext("2d")
-           ctx.drawImage(img, 0, 0, img.width, img.height)
-           var ext = img.src.substring(img.src.lastIndexOf(".")+1).toLowerCase()
-           var dataURL = canvas.toDataURL("image/"+ext) 
-           return dataURL
-      }  
-
-      var image = new Image()
-      image.src = img
-      image.onload = function () {
-        var base64 = getBase64Image(image)
-        // console.log("HJY TEST : base64 = " + base64)
-        message.img = base64
+      if (this.files.length != 0) {
+          var file = this.files[0]
+          var reader = new FileReader()
+          reader.onload = function(e) {
+            that.hasImg = true;
+            $("#preview").attr("src",e.target.result)
+            message.img = e.target.result
+          }
+          reader.readAsDataURL(file)
       }
-      window.URL.revokeObjectURL(imgSrc)
-      $("#preview").attr("src","")
-      that.hasImg = false
     }
 
     function sendMessage () {
-      if(imgSrc != ""){
-        getBase64Img()
-      }
-      setTimeout(()=>{
-        let html = $inputarea.children('img');
-        // console.log('HJY TEST : $inputarea.text() = ' + $inputarea.text())
-        message.text = $inputarea.text() 
-        websocket.send(JSON.stringify(message))
-        message = {}
-        $inputarea.html('')
-        $inputarea.html(html)
-      },200)
+      $("#preview").attr("src","")
+      that.hasImg = false
+      let html = $inputarea.children('img')
+      message.text = $inputarea.text() 
+      websocket.send(JSON.stringify(message))
+      message = {}
+      $inputarea.html('')
+      $inputarea.html(html)
     }
 
     function KeyUp (e) {
