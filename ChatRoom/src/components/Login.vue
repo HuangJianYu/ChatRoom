@@ -13,12 +13,58 @@
 </template>
 
 <script>
+import $ from 'jquery'
+
 export default {
   name: 'Login',
   data:function () {
     return {
       msg: 'Welcome to Your Vue.js App'
     }
+  },
+  mounted:function () {
+    let $reset = $('.reset')
+    
+    $(".submit").click(function () {
+      if ($(".username").val().length == 0){
+        return alert("请输入内容!");
+      }
+      if ($(".password").val().length == 0){
+        return alert("请输入密码!");
+      }
+ 
+      $.ajax({
+        url:"http://localhost:8080/login",
+        type:"POST",
+        data:{
+          username:$(".username").val(),
+          password:$(".password").val()
+        },
+        success:function (res) {
+          alert("登录成功!")
+        },
+        error:function (err) {
+          console.log(err);
+        }
+      })
+    })
+
+    $reset.click(function () {
+      $.ajax({
+        url:"http://localhost:8080/register",
+        type:"POST",
+        data:{
+          username:$(".username").val(),
+          password:$(".password").val()
+        },
+        success:function (res) {
+          alert(res);
+        },
+        error:function (err) {
+          console.log(err);
+        }
+      })
+    })
   }
 }
 </script>

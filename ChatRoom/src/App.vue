@@ -5,15 +5,27 @@
       <router-link to="/ChatRoom">chatroom</router-link>
       <router-link to="/HelloWorld">helloworld</router-link>
     </p> -->
-    <router-view/>
+    <!-- <router-view/> -->
+    <Login v-if="curView === 'Login'"></Login>
+    <ChatRoom v-if="curView === 'ChatRoom'"></ChatRoom>
   </div>
 </template>
 
 <script>
+import Login from './components/Login.vue'
+import ChatRoom from './components/ChatRoom.vue'
 export default {
-  name: 'App'
+  name: 'App',
+  data: function () {
+    return {
+      curView: 'Login'
+    }
+  },
+  components: {
+    Login,
+    ChatRoom
+  }
 }
-console.log("HJY TEST : test version 2")
 </script>
 
 <style>
