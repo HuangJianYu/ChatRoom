@@ -27,7 +27,19 @@ export default {
   mounted:function () {
     let $reset = $('.reset')
     let $sign_up_btn = $('.sign_up_btn')
-    let $submit = $('.submit')    
+    let $submit = $('.submit')
+    let $username = $('.username')
+    let $password = $('.password')
+
+    $username.click(function(){
+      if($username.val() === 'USERNAME'){
+        $username.val('')
+      }
+    })
+
+    $password.click(function(){
+      $password.val('')
+    })
 
     $sign_up_btn.mouseover(function () {
       $sign_up_btn.css("color","blue")
@@ -69,10 +81,16 @@ export default {
           password:$(".password").val()
         },
         success:function (res) {
-          alert("登录成功!")
-          eventBus.$emit('App',{
-            cmd:'openChatRoom'
-          })
+          console.log("HJY TEST : Login ajax res = "+res)
+          alert(res)
+          if(res === '用户名不存在!'){
+            return
+          }else if(res === '登录成功!'){
+            eventBus.$emit('App',{
+              cmd:'openChatRoom',
+              username: $(".username").val()
+            })
+          }
         },
         error:function (err) {
           console.log(err)

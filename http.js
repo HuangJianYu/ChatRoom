@@ -23,7 +23,7 @@ http.createServer(function (req , res) {
       if(user.username){
         fs.readFile("db.txt" , "utf-8" , function (err,data) {
           if (!err){
-            console.log("读取文件成功");
+            console.log("read file success");
             if (!data){
               if(pathName == "/login"){
                 res.end("该用户不存在");
@@ -46,14 +46,17 @@ http.createServer(function (req , res) {
                 return;
               }
             }else {
-              console.log("文件中有数据");
+              console.log("data on file");
 //把数据转成JSON对象，以便我们使用
               var arr = JSON.parse(data);
 //遍历整个保存数据的数组 判断登录注册
+              console.log("HJY TEST : arr = "+JSON.stringify(arr));
               for(var i = 0;i < arr.length;i++){
                 var obj = arr[i];
                 if(obj.username == user.username){
                   if(pathName == "/login"){
+                    console.log("HJY TEST : obj.password = "+obj.password)
+                    console.log("HJY TEST : user.password = "+user.password)
                     if (obj.password == user.password){
                       res.end("登录成功!");
                       return;
@@ -84,7 +87,7 @@ http.createServer(function (req , res) {
               }
             }
           }else {
-            console.log("读取文件失败");
+            console.log("read file failed");
           }
         })
       }
@@ -94,6 +97,6 @@ http.createServer(function (req , res) {
   }
 }).listen(8080 , function (err) {
   if (!err){
-    console.log("服务器启动成功，正在监听port8080...");
+    console.log("http server listening on port8080...");
   }
 });

@@ -34,7 +34,7 @@ export default {
         return
       }
       $.ajax({
-        url:"http://localhost:8080/register",
+        url:"http://localhost/register",
         type:"POST",
         data:{
           username:$(".content2_username").val(),

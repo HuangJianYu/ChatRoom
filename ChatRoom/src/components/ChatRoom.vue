@@ -24,6 +24,8 @@
 
 <script>
 import $ from 'jquery'
+import {eventBus} from '../eventBus.js'
+
 export default {
   name: 'App',
   data: function () {
@@ -43,6 +45,10 @@ export default {
     let message = {}
     console.log('HJY TEST : enter chatRoom')
     var websocket = new WebSocket("ws://localhost:8888")
+
+    eventBus.$on('ChatRoom',function(val){
+      console.log("HJY TEST : ChatRoom $on val = "+JSON.stringify(val))
+    })
 
     function showMessage (mes) {
       let date = new Date()

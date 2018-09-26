@@ -39,6 +39,9 @@ export default {
         that.curView = 'Login'
       }else if(val.cmd === 'openChatRoom'){
         that.curView = 'ChatRoom'
+        setTimeout(()=>{
+          eventBus.$emit('ChatRoom',{username:val.username})
+        })
       }
     })
   }
