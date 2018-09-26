@@ -8,24 +8,52 @@
         <input type="submit" class="submit" value="SIGN IN"/>
         <input type="reset" class="reset" value="RESET"/>
       </div>
+      <div class="sign_up_btn">还没有账号？点击注册</div>
     </div>
   </div>
 </template>
 
 <script>
 import $ from 'jquery'
+import {eventBus} from '../eventBus.js'
 
 export default {
   name: 'Login',
   data:function () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      
     }
   },
   mounted:function () {
     let $reset = $('.reset')
+    let $sign_up_btn = $('.sign_up_btn')
+    let $submit = $('.submit')    
+
+    $sign_up_btn.mouseover(function () {
+      $sign_up_btn.css("color","blue")
+      $sign_up_btn.css("cursor","pointer")
+    })
+
+    $sign_up_btn.mouseout(function () {
+      $sign_up_btn.css("color","white")
+      $sign_up_btn.css("cursor","default")
+    })
+
+    $sign_up_btn.click(function () {
+      eventBus.$emit('App',{
+        cmd:'openSignUp'
+      })
+    })
+
+    $submit.mouseover(function () {
+      $submit.css("cursor","pointer")
+    })
+
+    $reset.mouseover(function () {
+      $reset.css("cursor","pointer")
+    })
     
-    $(".submit").click(function () {
+    $submit.click(function () {
       if ($(".username").val().length == 0){
         return alert("请输入内容!");
       }
@@ -42,28 +70,19 @@ export default {
         },
         success:function (res) {
           alert("登录成功!")
+          eventBus.$emit('App',{
+            cmd:'openChatRoom'
+          })
         },
         error:function (err) {
-          console.log(err);
+          console.log(err)
         }
       })
     })
 
     $reset.click(function () {
-      $.ajax({
-        url:"http://localhost:8080/register",
-        type:"POST",
-        data:{
-          username:$(".username").val(),
-          password:$(".password").val()
-        },
-        success:function (res) {
-          alert(res);
-        },
-        error:function (err) {
-          console.log(err);
-        }
-      })
+      $(".username").val('')
+      $(".password").val('')
     })
   }
 }
@@ -146,5 +165,14 @@ export default {
     background: #c0392b;
     border: 0px;
     border-radius: 5px;
+  }
+  .sign_up_btn{
+    text-align: center;
+    height: 10%;
+    text-decoration: underline;
+    margin-top: 2%;
+    font-size: 1.5rem;
+    color: white;
+    /*background-color: red;*/
   }
 </style>

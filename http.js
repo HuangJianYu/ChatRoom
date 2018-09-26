@@ -1,8 +1,10 @@
+var socket = require('./socket.js')
 var http = require("http");
 var url = require("url");
 var qs = require("querystring");
 var fs = require("fs");
  
+socket.a();
 http.createServer(function (req , res) {
 //设置请求头
   res.setHeader("Access-Control-Allow-Origin","*");
@@ -35,6 +37,8 @@ http.createServer(function (req , res) {
 //把用户的帐号密码保存
                 obj.username = user.username;
                 obj.password = user.password;
+                obj.phone = user.phone;
+                obj.mail = user.mail;
                 arr.push(obj);
 //同步写入db.txt文件，必须是同步进行
                 fs.writeFileSync("db.txt" , JSON.stringify(arr) , "utf-8");
