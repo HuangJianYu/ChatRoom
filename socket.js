@@ -9,21 +9,27 @@ module.exports = {
 		var server = ws.createServer(function (conn) {
 			console.log("New connection");
 			clientCount++;
-			conn.nickname = 'user' + clientCount;
-			var mes = {};
-			mes.type = "enter";
-			mes.data = conn.nickname + ' comes in';
-			broadcast(JSON.stringify(mes));
+			// conn.nickname = 'user' + clientCount;
+			// var mes = {};
+			// mes.type = "enter";
+			// mes.data = conn.nickname + ' comes in';
+			// broadcast(JSON.stringify(mes));
 			conn.on("text", function (str) {
 				// console.log("Received "+str);
 				var stri = JSON.parse(str);
 				var mes = {};
-				mes.type = "message";
-				mes.name = conn.nickname;
-				mes.message = stri.text;
-				if(stri.img)
-					mes.img = stri.img;
-				broadcast(JSON.stringify(mes));
+				if(stri.type === "enterMessage"){
+					mes.type = "enter";
+					mes.data = stri.username;
+					broadcast(JSON.stringify(mes));
+				}else if(stri.type === "chatContent"){
+					mes.type = "message";
+					mes.name = stri.username;
+					mes.message = stri.text;
+					if(stri.img)
+						mes.img = stri.img;
+					broadcast(JSON.stringify(mes));
+				}
 			});
 			conn.on("close", function (code, reason) {
 				console.log("connection closed");

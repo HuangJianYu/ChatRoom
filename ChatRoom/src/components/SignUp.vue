@@ -34,7 +34,7 @@ export default {
         return
       }
       $.ajax({
-        url:"http://localhost/register",
+        url:"http://localhost:3000/register",
         type:"POST",
         data:{
           username:$(".content2_username").val(),
@@ -43,14 +43,14 @@ export default {
           password:$(".password").val()
         },
         success:function (res) {
-          alert(res);
+          alert(res)
+          if(res === '注册成功!'){
+            eventBus.$emit('App',{cmd:'openLogin'})
+          }
         },
         error:function (err) {
           console.log(err);
         }
-      })
-      eventBus.$emit('App',{
-        cmd:'openLogin'
       })
     })
   }

@@ -74,7 +74,7 @@ export default {
       }
  
       $.ajax({
-        url:"http://localhost:8080/login",
+        url:"http://localhost:3000/login",
         type:"POST",
         data:{
           username:$(".username").val(),

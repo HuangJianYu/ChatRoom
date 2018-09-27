@@ -24,6 +24,7 @@ http.createServer(function (req , res) {
         fs.readFile("db.txt" , "utf-8" , function (err,data) {
           if (!err){
             console.log("read file success");
+            console.log("HJY TEST : data = "+data);
             if (!data){
               if(pathName == "/login"){
                 res.end("该用户不存在");
@@ -51,6 +52,7 @@ http.createServer(function (req , res) {
               var arr = JSON.parse(data);
 //遍历整个保存数据的数组 判断登录注册
               console.log("HJY TEST : arr = "+JSON.stringify(arr));
+              console.log("HJY TEST : pathName = "+pathName);
               for(var i = 0;i < arr.length;i++){
                 var obj = arr[i];
                 if(obj.username == user.username){
@@ -95,8 +97,8 @@ http.createServer(function (req , res) {
   }else {
     res.end("get请求");
   }
-}).listen(8080 , function (err) {
+}).listen(3000 , function (err) {
   if (!err){
-    console.log("http server listening on port8080...");
+    console.log("http server listening on port 3000...");
   }
 });

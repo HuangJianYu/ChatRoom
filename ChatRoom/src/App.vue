@@ -41,7 +41,7 @@ export default {
         that.curView = 'ChatRoom'
         setTimeout(()=>{
           eventBus.$emit('ChatRoom',{username:val.username})
-        })
+        },200)
       }
     })
   }
