@@ -21,6 +21,7 @@ module.exports = {
 				if(stri.type === "enterMessage"){
 					mes.type = "enter";
 					mes.data = stri.username;
+					conn.nickname = stri.username;
 					broadcast(JSON.stringify(mes));
 				}else if(stri.type === "chatContent"){
 					mes.type = "message";
@@ -35,7 +36,7 @@ module.exports = {
 				console.log("connection closed");
 				var mes = {};
 				mes.type = "leave";
-				mes.data = conn.nickname + ' left';
+				mes.data = conn.nickname;
 				broadcast(JSON.stringify(mes));
 			});
 			conn.on("error", function (err) {

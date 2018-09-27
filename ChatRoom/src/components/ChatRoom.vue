@@ -50,7 +50,7 @@ export default {
     var websocket = new WebSocket("ws://localhost:8888")
 
     eventBus.$on('ChatRoom',function(val){
-      console.log("HJY TEST : ChatRoom $on val = "+JSON.stringify(val))
+      // console.log("HJY TEST : ChatRoom $on val = "+JSON.stringify(val))
       username = val.username
       setTimeout(()=>{
         init(val.username)
@@ -63,6 +63,13 @@ export default {
       if (mes.type === 'enter') {
         that.user.push(mes.data)
       } else if (mes.type === 'leave') {
+        console.log('HJY TEST : that.user.length = '+that.user.length)
+        for(let i = 0;i<that.user.length;i++){
+          console.log("HJY TEST : that.user[i] = "+that.user[i])
+          if(mes.data === that.user[i]){
+            console.log("HJY TEST : i = "+i)
+          }
+        }
       } else if (mes.type === 'message') {
         let chat = {}
         chat.info = mes.name+'  '+date.getHours()+':'+date.getMinutes()+':'+date.getSeconds()
@@ -157,9 +164,12 @@ export default {
     websocket.onmessage = function (e) {
       // console.log('HJY TEST : e.data = ' + e.data)
       var mes = JSON.parse(e.data)
-      // console.log('HJY TEST : e.data = ' + JSON.stringify(mes))
+      console.log('HJY TEST : e.data = ' + JSON.stringify(mes))
       showMessage(mes)
     }
+  },
+  beforeDestory:function(){
+
   }
 }
 </script>
