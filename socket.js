@@ -6,8 +6,11 @@ module.exports = {
 
 		var clientCount = 0;
 
+		var userlist = [];
+
 		var server = ws.createServer(function (conn) {
 			console.log("New connection");
+			console.log("HJY TEST : userlist = "+userlist);
 			clientCount++;
 			// conn.nickname = 'user' + clientCount;
 			// var mes = {};
@@ -20,7 +23,9 @@ module.exports = {
 				var mes = {};
 				if(stri.type === "enterMessage"){
 					mes.type = "enter";
-					mes.data = stri.username;
+					userlist.push(stri.username);
+					// mes.data = stri.username;
+					mes.data = userlist;
 					conn.nickname = stri.username;
 					broadcast(JSON.stringify(mes));
 				}else if(stri.type === "chatContent"){
@@ -37,6 +42,12 @@ module.exports = {
 				var mes = {};
 				mes.type = "leave";
 				mes.data = conn.nickname;
+				var i = 0;
+				for(i=0;i<userlist.length;i++){
+					if(userlist[i] === conn.nickname){
+						userlist.splice(i,1);
+					}
+				}
 				broadcast(JSON.stringify(mes));
 			});
 			conn.on("error", function (err) {

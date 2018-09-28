@@ -1,25 +1,28 @@
 <template>
   <div id="chatRoom">
-    <div class="user_list">
-      <li class="user_item" v-for="item in user">{{item}}</li>
-    </div>
-    <div id="scrolldIV" class="chat_record">
-      <div class="chat_item" v-for="item in chatContent">
-        <div class="chat_box">
-          <div class="chat_info">{{item.info}}</div>
-          <div class="content">{{item.message}}</div>
-          <img :src="item.img" v-if="item.showImg" class="chat_img">
+    <div class="chatRoomBox">
+      <div class="user_list">
+        <li class="user_item" v-for="item in user">{{item}}</li>
+      </div>
+      <div id="scrolldIV" class="chat_record">
+        <div class="chat_item" v-for="item in chatContent">
+          <div class="chat_box">
+            <div class="chat_info">{{item.info}}</div>
+            <div class="content">{{item.message}}</div>
+            <img :src="item.img" v-if="item.showImg" class="chat_img">
+          </div>
         </div>
       </div>
-    </div>
-    <div class="input_area">
-      <div class="add_file">
-        <input type="file" name="图片" class="add_img">
+      <div class="input_area">
+        <div class="add_file">
+          <img src="../../static/img/img.png" class="add_img_icon">
+          <input type="file" class="add_img" accept="image/png,image/jpeg,image/gif">
+        </div>
+        <div contentEditable="true" id="inputarea">
+          <!-- <img id="preview" v-show="hasImg" src=""> -->
+        </div>
+        <button class="send_btn">发送</button>
       </div>
-      <div contentEditable="true" id="inputarea">
-        <!-- <img id="preview" v-show="hasImg" src=""> -->
-      </div>
-      <button class="send_btn">发送</button>
     </div>
   </div>
 </template>
@@ -40,7 +43,7 @@ export default {
   },
   mounted: function () {
     let that = this
-    let $sendbtn = $('button')
+    let $sendbtn = $('.send_btn')
     let $inputarea = $('#inputarea')
     let $img = $('.add_img')
     let imgSrc = ""
@@ -57,22 +60,53 @@ export default {
       },200)
     })
 
+    $(".add_img_icon").click(function(){
+      $(".add_img").click()
+    })
+
+    $(".add_img_icon").mouseover(function(){
+      $(".add_img_icon").css('cursor','pointer')
+    })
+
+    $sendbtn.mouseover(function(){
+      $sendbtn.css('cursor','pointer')
+    })
+
     function showMessage (mes) {
       let date = new Date()
       console.log('HJY TEST : date = ' + JSON.stringify(date))
       if (mes.type === 'enter') {
-        that.user.push(mes.data)
+        // that.user.push(mes.data)
+        that.user = mes.data
       } else if (mes.type === 'leave') {
         console.log('HJY TEST : that.user.length = '+that.user.length)
         for(let i = 0;i<that.user.length;i++){
           console.log("HJY TEST : that.user[i] = "+that.user[i])
           if(mes.data === that.user[i]){
             console.log("HJY TEST : i = "+i)
+            that.user.splice(i,1)
           }
         }
       } else if (mes.type === 'message') {
         let chat = {}
-        chat.info = mes.name+'  '+date.getHours()+':'+date.getMinutes()+':'+date.getSeconds()
+        let time = ''
+        let hour = ''
+        let minutes = ''
+        let seconds = ''
+        if(date.getHours()<10)
+          hour = '0'+date.getHours()
+        else
+          hour = date.getHours()
+        if(date.getMinutes()<10)
+          minutes = '0' + date.getMinutes()
+        else
+          minutes = date.getMinutes()
+        if(date.getSeconds()<10)
+          seconds = '0' + date.getSeconds()
+        else
+          minutes = date.getSeconds()
+        time = hour+':'+minutes+':'+seconds
+        chat.info = mes.name+'  '+time
         chat.message = mes.message
         if(mes.img){
           chat.showImg = true
@@ -117,10 +151,12 @@ export default {
     }
 
     function sendMessage () {
+      if($inputarea.text() === ''){
+        alert("输入内容不能为空");
+        $inputarea.text('')
+        return
+      }
       message.type = 'chatContent'
-      // $("#preview").attr("src","")
-      // that.hasImg = false
-      // let html = $inputarea.children('img')
       message.text = $inputarea.text() 
       message.username = username
       websocket.send(JSON.stringify(message))
@@ -132,14 +168,6 @@ export default {
     function KeyUp (e) {
       console.log('HJY TEST : KeyUp = ' + e.which)
       if (e.keyCode == 13 && message != {}) {
-        // console.log("HJY TEST : img.src = " + $("#preview")[0].src)
-        if($inputarea.text() === ''){
-          // let html = $inputarea.children('img')
-          alert("输入内容不能为空");
-          $inputarea.text('')
-          // $inputarea.html(html)
-          return
-        }
         sendMessage()
       }
     }
@@ -167,48 +195,63 @@ export default {
       console.log('HJY TEST : e.data = ' + JSON.stringify(mes))
       showMessage(mes)
     }
-  },
-  beforeDestory:function(){
-
   }
 }
 </script>
 
 <style>
-#chatRoom {
+#chatRoom{
+  /*background-image: url("../../static/img/wallhaven.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 100%;
+  height: 100%;
+  position: absolute;*/
+}
+.chatRoomBox {
+  background-image: url("../../static/img/wallhaven.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 60%;
+  height: 90%;
+  margin-left: 20%;
   position: absolute;
-  width: 1200px;
-  height: 800px;
-  background-color: gray;
+  border-radius: 0.8rem;
+  /*border: solid;*/
 }
 .user_list{
   position: relative;
-  margin-top: 10px;
-  margin-left: 10px;
-  width: 300px;
-  height: 780px;
+  margin-top: 1%;
+  margin-left: 1%;
+  width: 22%;
+  height: 98%;
   overflow: auto;
   float: left;
+  text-align: center;
 }
 .user_item{
   background-color: white;
   list-style-type:none;
   line-height: 78px;
-  font-size: 20px;
-  margin-left: 0;
+  font-size: 1.5rem;
+  border-radius: 0.5rem;
   color: black;
-  width: 300px;
-  height: 78px;
+  width: 100%;
+  height: 10%;
+  margin-bottom: 1%;
 }
 .chat_record{
   position: relative;
-  margin-top: 10px;
-  margin-left: 10px;
-  width: 870px;
-  height: 520px;
+  margin-top: 1%;
+  margin-left: 1%;
+  width: 75%;
+  height: 65%;
   background-color: white;
   overflow: auto;
   float: left;
+  border-radius: 0.5rem;
 }
 .chat_item{
   width: 100%;
@@ -227,17 +270,17 @@ export default {
   border-radius: 0.6rem;
 }
 .chat_info{
-  float: left;
+  /*float: left;*/
   /*width: 90%;*/
   margin-left: 0.5vw;
   font-size: 1.2rem;
-  /*margin-right: 5%;*/
+  margin-right: 0.5vw;
   text-align: left;
   color: blue;
 }
 .content{
-  float: left;
-  width: 85%;
+  /*float: left;*/
+  /*width: 85%;*/
   margin-left: 1vw;
   font-size: 1.2rem;
   word-wrap: break-word;
@@ -252,39 +295,44 @@ export default {
   position: relative;
   float: left;
   margin-left: 10px;
-  width: 870px;
-  height: 260px;
-  /*background-color: green;*/
+  width: 75%;
+  height: 30%;
 }
 .add_file {
-    /* position: relative; */
     float: left;
-    /* margin-left: 5px; */
     width: 100%;
-    height: 60px;
+    height: 20%;
     background-color: white;
     border-top: solid 2px;
+}
+.add_img_icon{
+  max-height: 60%;
+  margin-left: 2%;
+  margin-top: 1%;
+}
+.add_img{
+  display: none;
 }
 #inputarea{
   position: relative;
   float: left;
   text-align: left;
   width: 100%;
-  height: 150px;
-  font-size: 20px;
+  height: 70%;
+  font-size: 1.4rem;
   border: none;
   background-color: white;
   overflow: auto;
 }
-/*#preview{
-  max-width: 30%;
-  max-height: 80%;
-}*/
 .send_btn{
   float: right;
-  width: 100px;
-  height: 30px;
-  margin-top: 10px;
-  margin-right: 10px;
+  width: 12%;
+  height: 12%;
+  margin-top: 1.5%;
+  margin-right: 2%;
+  font-size: 1rem;
+  background-color: white;
+  border: none;
+  border-radius: 0.4rem;
 }
 </style>
